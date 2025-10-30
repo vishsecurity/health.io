@@ -3,218 +3,183 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apple Watch Style Tool</title>
+<title>Health Dashboard</title>
 <style>
-/* Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background-color: #111;
-  color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+:root {
+  --sleep-color:#1e90ff; --cycling-color:#ff9f1a; --water-color:#00bfff;
+  --bg-dark:#121212; --bg-card:#1e1e1e; --text-light:#f5f5f5;
+  --circle-size:150px;
 }
-
-.watch-screen {
-  background: #1c1c1e;
-  border-radius: 40px;
-  width: 360px;
-  padding: 20px;
-  box-shadow: 0 0 30px rgba(0,0,0,0.5);
-  text-align: center;
-}
-
-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 5px;
-}
-
-header p {
-  font-size: 0.9rem;
-  color: #aaa;
-  margin-bottom: 20px;
-}
-
-.rings-container {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 20px;
-}
-
-.ring-widget {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.ring-widget:hover {
-  transform: scale(1.1);
-}
-
-.ring-bg, .ring-progress {
-  fill: none;
-  stroke-width: 10;
-}
-
-.ring-bg {
-  stroke: #333;
-}
-
-.ring-progress {
-  stroke-linecap: round;
-  transition: stroke-dashoffset 0.6s ease;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-}
-
-/* Gradient for rings */
-#gradient-water { stop-color: #00f0ff; }
-#gradient-sleep { stop-color: #a566ff; }
-#gradient-cycling { stop-color: #00ff7a; }
-
-.label {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-
-.label .value {
-  font-size: 1.2em;
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.label .name {
-  font-size: 0.8em;
-  color: #aaa;
-  transition: color 0.3s;
-}
-
-footer {
-  font-size: 0.7rem;
-  color: #666;
-  margin-top: 10px;
-}
+body{margin:0;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:var(--bg-dark);color:var(--text-light);display:flex;flex-direction:column;min-height:100vh;}
+h1{text-align:center;padding:20px 0;background:#000;color:var(--text-light);margin:0;}
+.tab{display:flex;justify-content:center;background:#000;}
+.tab button{padding:14px 30px;cursor:pointer;border:none;background:none;font-size:16px;transition:.3s;color:var(--text-light);}
+.tab button:hover{background:#333;}
+.tab button.active{border-bottom:3px solid var(--sleep-color);font-weight:bold;color:var(--sleep-color);}
+.tabcontent{display:none;flex:1;padding:20px;}
+#Status{display:flex;flex-direction:column;align-items:center;}
+.circle-container{display:flex;justify-content:center;flex-wrap:wrap;margin:20px;}
+.circle-card{margin:20px;text-align:center;position:relative;background:var(--bg-card);padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(255,255,255,0.1);}
+.circle-card svg{width:var(--circle-size);height:var(--circle-size);transform:rotate(-90deg);overflow:visible;}
+.circle-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.4em;font-weight:bold;color:var(--text-light);}
+.tracker-form{max-width:600px;margin:20px auto;background:var(--bg-card);padding:20px;border-radius:8px;box-shadow:0 2px 6px rgba(255,255,255,0.1);}
+.tracker-form label{display:block;margin-bottom:5px;font-weight:500;}
+.tracker-form input{width:100%;padding:8px;margin-bottom:15px;border-radius:4px;border:1px solid #444;font-size:14px;background:#222;color:var(--text-light);}
+.tracker-form button{background:var(--sleep-color);color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;font-size:16px;}
+table{width:100%;border-collapse:collapse;margin-top:20px;background:var(--bg-card);}
+th,td{border:1px solid #444;text-align:center;padding:10px;color:var(--text-light);}
+th{background:#222;}
+footer{text-align:center;padding:15px;background:#000;color:var(--text-light);margin-top:auto;}
 </style>
 </head>
 <body>
 
-<div class="watch-screen">
-  <header>
-    <h1>Apple Watch Tool</h1>
-    <p>Today's Stats</p>
-  </header>
-
-  <section class="rings-container">
-    <!-- Water Ring -->
-    <div class="ring-widget" data-percent="70" data-value="7L" data-name="Water">
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="gradient-water" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"/>
-            <stop offset="100%"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="45" class="ring-bg"></circle>
-        <circle cx="50" cy="50" r="45" class="ring-progress" stroke="url(#gradient-water)"></circle>
-      </svg>
-      <div class="label">
-        <div class="value">7L</div>
-        <div class="name">Water</div>
-      </div>
-    </div>
-
-    <!-- Sleep Ring -->
-    <div class="ring-widget" data-percent="50" data-value="6h" data-name="Sleep">
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="gradient-sleep" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"/>
-            <stop offset="100%"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="45" class="ring-bg"></circle>
-        <circle cx="50" cy="50" r="45" class="ring-progress" stroke="url(#gradient-sleep)"></circle>
-      </svg>
-      <div class="label">
-        <div class="value">6h</div>
-        <div class="name">Sleep</div>
-      </div>
-    </div>
-
-    <!-- Cycling Ring -->
-    <div class="ring-widget" data-percent="80" data-value="20km" data-name="Cycling">
-      <svg viewBox="0 0 100 100">
-        <defs>
-          <linearGradient id="gradient-cycling" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"/>
-            <stop offset="100%"/>
-          </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" r="45" class="ring-bg"></circle>
-        <circle cx="50" cy="50" r="45" class="ring-progress" stroke="url(#gradient-cycling)"></circle>
-      </svg>
-      <div class="label">
-        <div class="value">20km</div>
-        <div class="name">Cycling</div>
-      </div>
-    </div>
-  </section>
-
-  <footer>© 2025 My Wellness Tool</footer>
+<h1>Health Dashboard</h1>
+<div class="tab">
+<button class="tablinks active" onclick="openTab(event,'Status')">Status</button>
+<button class="tablinks" onclick="openTab(event,'Tracker')">Health Tracker</button>
 </div>
 
+<div id="Status" class="tabcontent">
+  <div class="circle-container">
+    <div class="circle-card">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <clipPath id="sleepClip"><circle cx="50" cy="50" r="45"/></clipPath>
+        <path id="sleepWave" clip-path="url(#sleepClip)" fill="var(--sleep-color)"/>
+      </svg>
+      <div class="circle-text" id="sleepText">0h</div>
+      <div>Sleep</div>
+    </div>
+    <div class="circle-card">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <clipPath id="cyclingClip"><circle cx="50" cy="50" r="45"/></clipPath>
+        <path id="cyclingWave" clip-path="url(#cyclingClip)" fill="var(--cycling-color)"/>
+      </svg>
+      <div class="circle-text" id="cyclingText">0km</div>
+      <div>Cycling</div>
+    </div>
+    <div class="circle-card">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <clipPath id="waterClip"><circle cx="50" cy="50" r="45"/></clipPath>
+        <path id="waterWave" clip-path="url(#waterClip)" fill="var(--water-color)"/>
+      </svg>
+      <div class="circle-text" id="waterText">0L</div>
+      <div>Water</div>
+    </div>
+  </div>
+</div>
+
+<div id="Tracker" class="tabcontent">
+<div class="tracker-form">
+<label>Date:</label><input type="date" id="date">
+<label>Sleep (hours):</label><input type="number" id="sleep" min="0" max="12" step="0.1">
+<label>Cycling (km):</label><input type="number" id="cycling" min="0" step="0.1">
+<label>Water (litres):</label><input type="number" id="water" min="0" step="0.1">
+<label>Upload GPX file:</label><input type="file" id="gpxFile" accept=".gpx">
+<button onclick="addEntry()">Add Entry</button>
+</div>
+<table id="healthTable">
+<thead><tr><th>Date</th><th>Sleep (hours)</th><th>Cycling (km)</th><th>Water (litres)</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<footer>© Vishal Chaudhary. All Rights Reserved.</footer>
+
 <script>
-// Function to animate ring progress
-function setProgress(widgetElem, percent) {
-  const circle = widgetElem.querySelector('.ring-progress');
-  const radius = circle.r.baseVal.value;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percent / 100) * circumference;
-  circle.style.strokeDasharray = `${circumference}`;
-  circle.style.strokeDashoffset = `${circumference}`; // start empty
-  // Animate to target
-  setTimeout(() => { circle.style.strokeDashoffset = offset; }, 100);
+function openTab(evt, tabName){
+  document.querySelectorAll(".tabcontent").forEach(tc=>tc.style.display="none");
+  document.querySelectorAll(".tablinks").forEach(tb=>tb.classList.remove("active"));
+  document.getElementById(tabName).style.display="flex";
+  evt.currentTarget.classList.add("active");
 }
 
-// Initialize rings and gradient animations
-document.querySelectorAll('.ring-widget').forEach(widget => {
-  const percent = widget.dataset.percent || 0;
-  const value = widget.dataset.value;
-  const name = widget.dataset.name;
-  widget.querySelector('.label .value').textContent = value;
-  widget.querySelector('.label .name').textContent = name;
-  setProgress(widget, percent);
-});
+let healthData=[];
+const maxValues={sleep:12,cycling:50,water:5};
 
-// Optional: live updating metrics
-function randomUpdate() {
-  document.querySelectorAll('.ring-widget').forEach(widget => {
-    const newPercent = Math.floor(Math.random() * 100);
-    const valueElem = widget.querySelector('.label .value');
-    const name = widget.dataset.name;
-    let displayValue = newPercent;
-    if(name === "Water") displayValue = (newPercent/10).toFixed(1) + "L";
-    if(name === "Sleep") displayValue = Math.floor(newPercent/10) + "h";
-    if(name === "Cycling") displayValue = Math.floor(newPercent/5) + "km";
-    valueElem.textContent = displayValue;
-    setProgress(widget, newPercent);
-  });
+function updateWave(id,value,max){
+  const percent=Math.min(value/max,1);
+  const height=100-(percent*100);
+  // static wave
+  const wavePath=`M0 ${height} Q25 ${height+3} 50 ${height} T100 ${height} V100 H0 Z`;
+  document.getElementById(id).setAttribute("d",wavePath);
 }
 
-// Update every 5 seconds to simulate live data
-setInterval(randomUpdate, 5000);
+function setCircleProgress(textId,value){
+  document.getElementById(textId).textContent=value+(textId.includes("sleep")?"h":textId.includes("cycling")?"km":"L");
+}
+
+function updateStatusCircles(){
+  let totalSleep=0,totalCycling=0,totalWater=0;
+  healthData.forEach(e=>{totalSleep+=e.sleep; totalCycling+=e.cycling; totalWater+=e.water;});
+  setCircleProgress("sleepText",totalSleep.toFixed(1));
+  setCircleProgress("cyclingText",totalCycling.toFixed(2));
+  setCircleProgress("waterText",totalWater.toFixed(1));
+  updateWave("sleepWave",totalSleep,maxValues.sleep);
+  updateWave("cyclingWave",totalCycling,maxValues.cycling);
+  updateWave("waterWave",totalWater,maxValues.water);
+}
+
+function addEntry(){
+  const date=document.getElementById('date').value;
+  let sleep=parseFloat(document.getElementById('sleep').value);
+  let cycling=parseFloat(document.getElementById('cycling').value);
+  let water=parseFloat(document.getElementById('water').value);
+  if(!date||isNaN(sleep)||isNaN(cycling)||isNaN(water)){ alert("Fill all fields"); return; }
+  const gpxFile=document.getElementById("gpxFile").files[0];
+  if(gpxFile){
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const parser=new DOMParser();
+      const xmlDoc=parser.parseFromString(e.target.result,"text/xml");
+      const trkpts=xmlDoc.getElementsByTagName("trkpt");
+      if(trkpts.length>1){
+        let distanceKm=0;
+        for(let i=1;i<trkpts.length;i++){
+          const lat1=parseFloat(trkpts[i-1].getAttribute("lat"));
+          const lon1=parseFloat(trkpts[i-1].getAttribute("lon"));
+          const lat2=parseFloat(trkpts[i].getAttribute("lat"));
+          const lon2=parseFloat(trkpts[i].getAttribute("lon"));
+          distanceKm+=haversine(lat1,lon1,lat2,lon2);
+        }
+        cycling+=distanceKm;
+      }
+      saveEntry(date,sleep,cycling,water);
+    };
+    reader.readAsText(gpxFile);
+  }else saveEntry(date,sleep,cycling,water);
+}
+
+function saveEntry(date,sleep,cycling,water){
+  healthData.push({date,sleep,cycling,water});
+  const table=document.querySelector('#healthTable tbody');
+  const newRow=table.insertRow();
+  newRow.insertCell(0).textContent=date;
+  newRow.insertCell(1).textContent=sleep;
+  newRow.insertCell(2).textContent=cycling.toFixed(2);
+  newRow.insertCell(3).textContent=water;
+  updateStatusCircles();
+  document.getElementById('date').value='';
+  document.getElementById('sleep').value='';
+  document.getElementById('cycling').value='';
+  document.getElementById('water').value='';
+  document.getElementById('gpxFile').value='';
+}
+
+function haversine(lat1,lon1,lat2,lon2){
+  function toRad(x){return x*Math.PI/180;}
+  const R=6371;
+  const dLat=toRad(lat2-lat1);
+  const dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+  return R*c;
+}
+
+document.getElementById("Status").style.display="flex";
 </script>
-
 </body>
 </html>
