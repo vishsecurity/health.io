@@ -25,7 +25,7 @@ h1{text-align:center;padding:20px 0;background:#000;color:var(--text-light);marg
 .tracker-form{max-width:600px;margin:20px auto;background:var(--bg-card);padding:20px;border-radius:8px;box-shadow:0 2px 6px rgba(255,255,255,0.1);}
 .tracker-form label{display:block;margin-bottom:5px;font-weight:500;}
 .tracker-form input{width:100%;padding:8px;margin-bottom:15px;border-radius:4px;border:1px solid #444;font-size:14px;background:#222;color:var(--text-light);}
-.tracker-form button{background:var(--sleep-color);color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;font-size:16px;}
+.tracker-form button{background:var(--sleep-color);color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;font-size:16px;margin-right:10px;}
 table{width:100%;border-collapse:collapse;margin-top:20px;background:var(--bg-card);}
 th,td{border:1px solid #444;text-align:center;padding:10px;color:var(--text-light);}
 th{background:#222;}
@@ -36,8 +36,8 @@ footer{text-align:center;padding:15px;background:#000;color:var(--text-light);ma
 
 <h1>Health Dashboard</h1>
 <div class="tab">
-<button class="tablinks active" onclick="openTab(event,'Status')">Status</button>
-<button class="tablinks" onclick="openTab(event,'Tracker')">Health Tracker</button>
+  <button class="tablinks active" onclick="openTab(event,'Status')">Status</button>
+  <button class="tablinks" onclick="openTab(event,'Tracker')">Health Tracker</button>
 </div>
 
 <div id="Status" class="tabcontent">
@@ -74,16 +74,22 @@ footer{text-align:center;padding:15px;background:#000;color:var(--text-light);ma
 
 <div id="Tracker" class="tabcontent">
 <div class="tracker-form">
-<label>Date:</label><input type="date" id="date">
-<label>Sleep (hours):</label><input type="number" id="sleep" min="0" max="12" step="0.1">
-<label>Cycling (km):</label><input type="number" id="cycling" min="0" step="0.1">
-<label>Water (litres):</label><input type="number" id="water" min="0" step="0.1">
-<label>Upload GPX file:</label><input type="file" id="gpxFile" accept=".gpx">
-<button onclick="addEntry()">Add Entry</button>
+  <label>Date:</label><input type="date" id="date">
+  <label>Sleep (hours):</label><input type="number" id="sleep" min="0" max="12" step="0.1">
+  <label>Cycling (km):</label><input type="number" id="cycling" min="0" step="0.1">
+  <label>Water (litres):</label><input type="number" id="water" min="0" step="0.1">
+  <label>Upload GPX file:</label><input type="file" id="gpxFile" accept=".gpx">
+  <div style="margin-top:10px;">
+    <button onclick="addEntry()">Add Entry</button>
+    <button onclick="exportGPX()">Export GPX</button>
+    <button onclick="importGPX()">Import GPX</button>
+    <input type="file" id="importGpxInput" accept=".gpx" style="display:none;">
+  </div>
 </div>
+
 <table id="healthTable">
-<thead><tr><th>Date</th><th>Sleep (hours)</th><th>Cycling (km)</th><th>Water (litres)</th></tr></thead>
-<tbody></tbody>
+  <thead><tr><th>Date</th><th>Sleep (hours)</th><th>Cycling (km)</th><th>Water (litres)</th></tr></thead>
+  <tbody></tbody>
 </table>
 </div>
 
@@ -103,7 +109,6 @@ const maxValues={sleep:12,cycling:50,water:5};
 function updateWave(id,value,max){
   const percent=Math.min(value/max,1);
   const height=100-(percent*100);
-  // static wave
   const wavePath=`M0 ${height} Q25 ${height+3} 50 ${height} T100 ${height} V100 H0 Z`;
   document.getElementById(id).setAttribute("d",wavePath);
 }
@@ -135,7 +140,7 @@ function addEntry(){
     reader.onload=function(e){
       const parser=new DOMParser();
       const xmlDoc=parser.parseFromString(e.target.result,"text/xml");
-      const trkpts=xmlDoc.getElementsByTagName("trkpt");
+      const trkpts=xmlDoc.getElementsByTagNameNS("*","trkpt");
       if(trkpts.length>1){
         let distanceKm=0;
         for(let i=1;i<trkpts.length;i++){
@@ -143,9 +148,14 @@ function addEntry(){
           const lon1=parseFloat(trkpts[i-1].getAttribute("lon"));
           const lat2=parseFloat(trkpts[i].getAttribute("lat"));
           const lon2=parseFloat(trkpts[i].getAttribute("lon"));
-          distanceKm+=haversine(lat1,lon1,lat2,lon2);
+          if(!isNaN(lat1)&&!isNaN(lon1)&&!isNaN(lat2)&&!isNaN(lon2)){
+            distanceKm+=haversine(lat1,lon1,lat2,lon2);
+          }
         }
         cycling+=distanceKm;
+        alert(`GPX file processed: ${gpxFile.name}\nDistance added: ${distanceKm.toFixed(2)} km`);
+      }else{
+        alert("No valid track points found in GPX file.");
       }
       saveEntry(date,sleep,cycling,water);
     };
@@ -170,13 +180,62 @@ function saveEntry(date,sleep,cycling,water){
 }
 
 function haversine(lat1,lon1,lat2,lon2){
-  function toRad(x){return x*Math.PI/180;}
   const R=6371;
+  const toRad=x=>x*Math.PI/180;
   const dLat=toRad(lat2-lat1);
   const dLon=toRad(lon2-lon1);
   const a=Math.sin(dLat/2)**2 + Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
   return R*c;
+}
+
+// ====== GPX Export Function ======
+function exportGPX(){
+  if(healthData.length===0){alert("No data to export!");return;}
+  let gpx=`<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HealthDashboard" xmlns="http://www.topografix.com/GPX/1/1">\n`;
+  healthData.forEach(entry=>{
+    gpx+=`  <trk>\n    <name>${entry.date}</name>\n    <desc>Sleep: ${entry.sleep}h, Cycling: ${entry.cycling}km, Water: ${entry.water}L</desc>\n    <trkseg>\n      <trkpt lat="0" lon="0"><ele>0</ele><time>${entry.date}T00:00:00Z</time></trkpt>\n    </trkseg>\n  </trk>\n`;
+  });
+  gpx+=`</gpx>`;
+  const blob=new Blob([gpx],{type:"application/gpx+xml"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="health_data_export.gpx";
+  a.click();
+}
+
+// ====== GPX Import Function ======
+function importGPX(){
+  const input=document.getElementById("importGpxInput");
+  input.click();
+  input.onchange=function(){
+    const file=input.files[0];
+    if(!file){return;}
+    const reader=new FileReader();
+    reader.onload=function(e){
+      const parser=new DOMParser();
+      const xmlDoc=parser.parseFromString(e.target.result,"text/xml");
+      const tracks=xmlDoc.getElementsByTagNameNS("*","trk");
+      for(let trk of tracks){
+        const nameEl=trk.getElementsByTagNameNS("*","name")[0];
+        const descEl=trk.getElementsByTagNameNS("*","desc")[0];
+        const date=nameEl?nameEl.textContent:"Unknown";
+        let sleep=0,cycling=0,water=0;
+        if(descEl){
+          const text=descEl.textContent;
+          const sMatch=text.match(/Sleep:\s*([\d.]+)/i);
+          const cMatch=text.match(/Cycling:\s*([\d.]+)/i);
+          const wMatch=text.match(/Water:\s*([\d.]+)/i);
+          sleep=sMatch?parseFloat(sMatch[1]):0;
+          cycling=cMatch?parseFloat(cMatch[1]):0;
+          water=wMatch?parseFloat(wMatch[1]):0;
+        }
+        saveEntry(date,sleep,cycling,water);
+      }
+      alert("GPX data imported successfully!");
+    };
+    reader.readAsText(file);
+  };
 }
 
 document.getElementById("Status").style.display="flex";
