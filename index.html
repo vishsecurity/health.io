@@ -6,30 +6,145 @@
 <title>Health Dashboard</title>
 <style>
 :root {
-  --sleep-color:#1e90ff; --cycling-color:#ff9f1a; --water-color:#00bfff;
-  --bg-dark:#121212; --bg-card:#1e1e1e; --text-light:#f5f5f5;
+  --sleep-color:#1e90ff; 
+  --cycling-color:#ff9f1a; 
+  --water-color:#00bfff;
+  --bg-dark:#000; 
+  --bg-card:#111; 
+  --text-light:#f5f5f5;
   --circle-size:150px;
 }
-body{margin:0;font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;background:var(--bg-dark);color:var(--text-light);display:flex;flex-direction:column;min-height:100vh;}
-h1{text-align:center;padding:20px 0;background:#000;color:var(--text-light);margin:0;}
-.tab{display:flex;justify-content:center;background:#000;}
-.tab button{padding:14px 30px;cursor:pointer;border:none;background:none;font-size:16px;transition:.3s;color:var(--text-light);}
-.tab button:hover{background:#333;}
-.tab button.active{border-bottom:3px solid var(--sleep-color);font-weight:bold;color:var(--sleep-color);}
-.tabcontent{display:none;flex:1;padding:20px;}
-#Status{display:flex;flex-direction:column;align-items:center;}
-.circle-container{display:flex;justify-content:center;flex-wrap:wrap;margin:20px;}
-.circle-card{margin:20px;text-align:center;position:relative;background:var(--bg-card);padding:20px;border-radius:12px;box-shadow:0 0 10px rgba(255,255,255,0.1);}
-.circle-card svg{width:var(--circle-size);height:var(--circle-size);transform:rotate(-90deg);overflow:visible;}
-.circle-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:1.4em;font-weight:bold;color:var(--text-light);}
-.tracker-form{max-width:600px;margin:20px auto;background:var(--bg-card);padding:20px;border-radius:8px;box-shadow:0 2px 6px rgba(255,255,255,0.1);}
-.tracker-form label{display:block;margin-bottom:5px;font-weight:500;}
-.tracker-form input{width:100%;padding:8px;margin-bottom:15px;border-radius:4px;border:1px solid #444;font-size:14px;background:#222;color:var(--text-light);}
-.tracker-form button{background:var(--sleep-color);color:white;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;font-size:16px;margin-right:10px;}
-table{width:100%;border-collapse:collapse;margin-top:20px;background:var(--bg-card);}
-th,td{border:1px solid #444;text-align:center;padding:10px;color:var(--text-light);}
-th{background:#222;}
-footer{text-align:center;padding:15px;background:#000;color:var(--text-light);margin-top:auto;}
+body {
+  margin:0;
+  font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+  background:var(--bg-dark);
+  color:var(--text-light);
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+h1 {
+  text-align:center;
+  padding:20px 0;
+  background:#000;
+  color:var(--text-light);
+  margin:0;
+}
+.tab {
+  display:flex;
+  justify-content:center;
+  background:#000;
+}
+.tab button {
+  padding:14px 30px;
+  cursor:pointer;
+  border:none;
+  background:none;
+  font-size:16px;
+  transition:.3s;
+  color:var(--text-light);
+}
+.tab button:hover {background:#222;}
+.tab button.active {
+  border-bottom:3px solid var(--sleep-color);
+  font-weight:bold;
+  color:var(--sleep-color);
+}
+.tabcontent {
+  display:none;
+  flex:1;
+  padding:20px;
+}
+#Status {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.circle-container {
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin:20px;
+}
+.circle-card {
+  margin:20px;
+  text-align:center;
+  position:relative;
+  background:var(--bg-card);
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 0 10px rgba(255,255,255,0.1);
+}
+.circle-card svg {
+  width:var(--circle-size);
+  height:var(--circle-size);
+  transform:rotate(-90deg);
+  overflow:visible;
+}
+.circle-text {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:1.4em;
+  font-weight:bold;
+  color:var(--text-light);
+}
+.tracker-form {
+  max-width:600px;
+  margin:20px auto;
+  background:var(--bg-card);
+  padding:20px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(255,255,255,0.1);
+}
+.tracker-form label {
+  display:block;
+  margin-bottom:5px;
+  font-weight:500;
+}
+.tracker-form input {
+  width:100%;
+  padding:8px;
+  margin-bottom:15px;
+  border-radius:4px;
+  border:1px solid #333;
+  font-size:14px;
+  background:#111;
+  color:var(--text-light);
+}
+.tracker-form button {
+  background:var(--sleep-color);
+  color:white;
+  padding:10px 20px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  font-size:16px;
+  margin-right:10px;
+}
+.tracker-form button:hover {opacity:0.85;}
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+  background:var(--bg-card);
+}
+th,td {
+  border:1px solid #333;
+  text-align:center;
+  padding:10px;
+  color:var(--text-light);
+}
+th {background:#111;}
+footer {
+  text-align:center;
+  padding:15px;
+  background:#000;
+  color:var(--text-light);
+  margin-top:auto;
+  font-size:14px;
+}
 </style>
 </head>
 <body>
@@ -40,11 +155,11 @@ footer{text-align:center;padding:15px;background:#000;color:var(--text-light);ma
   <button class="tablinks" onclick="openTab(event,'Tracker')">Health Tracker</button>
 </div>
 
-<div id="Status" class="tabcontent">
+<div id="Status" class="tabcontent" style="display:flex;">
   <div class="circle-container">
     <div class="circle-card">
       <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <circle cx="50" cy="50" r="45" stroke="#333" stroke-width="5" fill="none"/>
         <clipPath id="sleepClip"><circle cx="50" cy="50" r="45"/></clipPath>
         <path id="sleepWave" clip-path="url(#sleepClip)" fill="var(--sleep-color)"/>
       </svg>
@@ -53,7 +168,7 @@ footer{text-align:center;padding:15px;background:#000;color:var(--text-light);ma
     </div>
     <div class="circle-card">
       <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <circle cx="50" cy="50" r="45" stroke="#333" stroke-width="5" fill="none"/>
         <clipPath id="cyclingClip"><circle cx="50" cy="50" r="45"/></clipPath>
         <path id="cyclingWave" clip-path="url(#cyclingClip)" fill="var(--cycling-color)"/>
       </svg>
@@ -62,7 +177,7 @@ footer{text-align:center;padding:15px;background:#000;color:var(--text-light);ma
     </div>
     <div class="circle-card">
       <svg viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" stroke="#444" stroke-width="5" fill="none"/>
+        <circle cx="50" cy="50" r="45" stroke="#333" stroke-width="5" fill="none"/>
         <clipPath id="waterClip"><circle cx="50" cy="50" r="45"/></clipPath>
         <path id="waterWave" clip-path="url(#waterClip)" fill="var(--water-color)"/>
       </svg>
@@ -154,9 +269,7 @@ function addEntry(){
         }
         cycling+=distanceKm;
         alert(`GPX file processed: ${gpxFile.name}\nDistance added: ${distanceKm.toFixed(2)} km`);
-      }else{
-        alert("No valid track points found in GPX file.");
-      }
+      }else{ alert("No valid track points found in GPX file."); }
       saveEntry(date,sleep,cycling,water);
     };
     reader.readAsText(gpxFile);
@@ -190,7 +303,7 @@ function haversine(lat1,lon1,lat2,lon2){
   return R*c;
 }
 
-// ====== GPX Export Function ======
+// GPX Export
 function exportGPX(){
   if(healthData.length===0){alert("No data to export!");return;}
   let gpx=`<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.1" creator="HealthDashboard" xmlns="http://www.topografix.com/GPX/1/1">\n`;
@@ -205,50 +318,30 @@ function exportGPX(){
   a.click();
 }
 
-// ====== GPX Import Function ======
+// GPX Import
 function importGPX(){
-  const input=document.getElementById("importGpxInput");
-  input.click();
-  input.onchange=function(){
-    const file=input.files[0];
-    if(!file){return;}
+  document.getElementById('importGpxInput').click();
+}
+document.getElementById('importGpxInput').addEventListener('change', function(){
+  const file=this.files[0];
+  if(file){
     const reader=new FileReader();
     reader.onload=function(e){
       const parser=new DOMParser();
       const xmlDoc=parser.parseFromString(e.target.result,"text/xml");
-      const tracks=xmlDoc.getElementsByTagNameNS("*","trk");
-      for(let trk of tracks){
-        const nameEl=trk.getElementsByTagNameNS("*","name")[0];
-        const descEl=trk.getElementsByTagNameNS("*","desc")[0];
-        const date=nameEl?nameEl.textContent:"Unknown";
-        let sleep=0,cycling=0,water=0;
-        if(descEl){
-          const text=descEl.textContent;
-          const sMatch=text.match(/Sleep:\s*([\d.]+)/i);
-          const cMatch=text.match(/Cycling:\s*([\d.]+)/i);
-          const wMatch=text.match(/Water:\s*([\d.]+)/i);
-          if(sMatch) sleep=parseFloat(sMatch[1]);
-          if(cMatch) cycling=parseFloat(cMatch[1]);
-          if(wMatch) water=parseFloat(wMatch[1]);
-        }
-        saveEntry(date,sleep,cycling,water);
+      const trks=xmlDoc.getElementsByTagNameNS("*","trk");
+      for(let i=0;i<trks.length;i++){
+        const name=trks[i].getElementsByTagNameNS("*","name")[0]?.textContent || "Unknown";
+        const desc=trks[i].getElementsByTagNameNS("*","desc")[0]?.textContent || "";
+        const sleep=parseFloat(desc.match(/Sleep: ([0-9.]+)/)?.[1]||0);
+        const cycling=parseFloat(desc.match(/Cycling: ([0-9.]+)/)?.[1]||0);
+        const water=parseFloat(desc.match(/Water: ([0-9.]+)/)?.[1]||0);
+        saveEntry(name,sleep,cycling,water,true);
       }
-      alert("GPX file imported successfully.");
     };
     reader.readAsText(file);
-  };
-}
-
-// ====== Load data from localStorage on page load ======
-window.addEventListener('load', () => {
-  const savedData = localStorage.getItem('healthData');
-  if(savedData){
-    healthData = JSON.parse(savedData);
-    healthData.forEach(entry => saveEntry(entry.date, entry.sleep, entry.cycling, entry.water, true));
   }
-  document.getElementById("Status").style.display="flex"; // Show Status by default
 });
 </script>
-
 </body>
 </html>
