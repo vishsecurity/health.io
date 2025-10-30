@@ -163,7 +163,7 @@ function addEntry(){
   }else saveEntry(date,sleep,cycling,water);
 }
 
-function saveEntry(date,sleep,cycling,water){
+function saveEntry(date,sleep,cycling,water,skipStorage=false){
   healthData.push({date,sleep,cycling,water});
   const table=document.querySelector('#healthTable tbody');
   const newRow=table.insertRow();
@@ -172,6 +172,7 @@ function saveEntry(date,sleep,cycling,water){
   newRow.insertCell(2).textContent=cycling.toFixed(2);
   newRow.insertCell(3).textContent=water;
   updateStatusCircles();
+  if(!skipStorage) localStorage.setItem('healthData', JSON.stringify(healthData));
   document.getElementById('date').value='';
   document.getElementById('sleep').value='';
   document.getElementById('cycling').value='';
@@ -226,19 +227,28 @@ function importGPX(){
           const sMatch=text.match(/Sleep:\s*([\d.]+)/i);
           const cMatch=text.match(/Cycling:\s*([\d.]+)/i);
           const wMatch=text.match(/Water:\s*([\d.]+)/i);
-          sleep=sMatch?parseFloat(sMatch[1]):0;
-          cycling=cMatch?parseFloat(cMatch[1]):0;
-          water=wMatch?parseFloat(wMatch[1]):0;
+          if(sMatch) sleep=parseFloat(sMatch[1]);
+          if(cMatch) cycling=parseFloat(cMatch[1]);
+          if(wMatch) water=parseFloat(wMatch[1]);
         }
         saveEntry(date,sleep,cycling,water);
       }
-      alert("GPX data imported successfully!");
+      alert("GPX file imported successfully.");
     };
     reader.readAsText(file);
   };
 }
 
-document.getElementById("Status").style.display="flex";
+// ====== Load data from localStorage on page load ======
+window.addEventListener('load', () => {
+  const savedData = localStorage.getItem('healthData');
+  if(savedData){
+    healthData = JSON.parse(savedData);
+    healthData.forEach(entry => saveEntry(entry.date, entry.sleep, entry.cycling, entry.water, true));
+  }
+  document.getElementById("Status").style.display="flex"; // Show Status by default
+});
 </script>
+
 </body>
 </html>
