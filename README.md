@@ -46,7 +46,3 @@ A **personal wellness dashboard** to track your Pomodoro productivity, cycling (
 
 **Vishal Chaudhary**  
 
-
-
-
-Do you want me to do that next?
