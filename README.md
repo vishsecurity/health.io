@@ -2,7 +2,7 @@
 
 A **personal wellness dashboard** to track your Pomodoro productivity, cycling (via GPX files), water intake, and sleep throughout the year. Built with **pure HTML, CSS, and JavaScript**—no backend required. Fully open-source and customizable.
 
----
+
 
 ## Features
 
@@ -27,7 +27,7 @@ A **personal wellness dashboard** to track your Pomodoro productivity, cycling (
   - Neumorphic design with soft shadows for a clean, modern look.  
   - Mobile-friendly and fully interactive.
 
----
+
 
 ## Usage
 
@@ -40,7 +40,7 @@ A **personal wellness dashboard** to track your Pomodoro productivity, cycling (
    - The heatmaps are prefilled with dummy data.  
    - Replace the arrays in `script` with your own daily records for water, sleep, and cycling.
 
----
+
 
 ## Author
 
